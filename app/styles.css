@@ -11,6 +11,11 @@ p {
     font-size: 1.2em
 }
 
+button:active {
+    transform: scale(0.95); /* Slightly shrink the button */
+
+}
+
 #chat {
     text-align: left;
     width: 60%;
