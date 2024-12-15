@@ -43,7 +43,7 @@ input:focus {
     background-color: transparent; /* No background */
     color: lime;     
     width: 8ch;
-    font-size:1.2em;   
+    font-size:1.2em; 
 }
 
 #send {          /* Set height to match width */
@@ -58,34 +58,38 @@ input:focus {
 #colors-div {
     margin: 10px;
 }
+
 .red {
     color: red;
+    accent-color: red;
 }
 
 .orange {
     color: orange;
+    accent-color: orange;
 }
 
 .yellow {
     color: yellow;
+    accent-color: yellow;
 }
 
 .lime {
     color: lime;
+    accent-color: lime;
 }
 
 .cyan {
     color: cyan;
+    accent-color: cyan;
 }
 
 .magenta {
     color: magenta;
+    accent-color: magenta;
 }
 
 .white {
     color: white;
-}
-
-.black {
-    color: gray
+    accent-color: white;
 }

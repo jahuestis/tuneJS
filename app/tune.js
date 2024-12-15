@@ -18,6 +18,7 @@ colors.forEach(color => {
     color.addEventListener('change', function() {
         colorSelected = this.value;
         messageInput.style.color = colorSelected;
+        messageInput.focus();
     });
 });
 var randomColor = Math.floor(Math.random() * colors.length);
@@ -28,6 +29,7 @@ window.onload = function() {
     channelInput.value = channel;
     messageInput.style.color = colorSelected;
     channelHeading.textContent = `channel ${channel}`;
+    messageInput.focus();
 }
 
 
