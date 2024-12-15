@@ -18,7 +18,7 @@ socket.on('connection', (ws) => {
             const messageColor = data.color;
             // Verify validity of message
             if (!(Number.isInteger(targetChannel) && targetChannel >= 0 && targetChannel <= 1000)) {
-                throw new Error(`Invalid message: ${targetChannel}`);
+                throw new Error(`Invalid message channel: ${targetChannel}`);
             }
             if (typeof messageText !== 'string') {
                 throw new Error(`Invalid message text: ${messageText}`);
