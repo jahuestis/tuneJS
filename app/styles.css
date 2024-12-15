@@ -1,0 +1,91 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;    
+    color: lime;
+    background-color: black;
+
+}
+
+p {
+    margin: 0.5em 1em 0.5em 1em;
+    font-size: 1.2em
+}
+
+#chat {
+    text-align: left;
+    width: 60%;
+    height: 70vh;
+    border: 2px solid lime;
+    overflow-y: auto;
+    margin: auto;
+    padding: 0.25em 0 0.25em 0;
+}
+
+#input-div {
+    width: 80%;
+    padding: 12px;
+    margin: auto;
+}
+
+#message-input {
+    border: 2px solid lime;    /* Lime border */
+    background-color: transparent; /* No background */
+    color: lime;     
+    width: 50%;
+    font-size: 1.2em;  
+}
+input:focus {
+    outline: none; /* Remove the blue outline when input is focused */
+}
+
+#channel-input {
+    border: 2px solid lime;    /* Lime border */
+    background-color: transparent; /* No background */
+    color: lime;     
+    width: 8ch;
+    font-size:1.2em;   
+}
+
+#send {          /* Set height to match width */
+    border: 2px solid lime;    /* Lime border */
+    background-color: transparent; /* No background */
+    color: lime;     
+    width: 8ch;
+    font-size:1.2em;          /* Lime text color */
+    
+}
+
+#colors-div {
+    margin: 10px;
+}
+.red {
+    color: red;
+}
+
+.orange {
+    color: orange;
+}
+
+.yellow {
+    color: yellow;
+}
+
+.lime {
+    color: lime;
+}
+
+.cyan {
+    color: cyan;
+}
+
+.magenta {
+    color: magenta;
+}
+
+.white {
+    color: white;
+}
+
+.black {
+    color: gray
+}
