@@ -1,7 +1,8 @@
 
 // -- Page Setup --
-var channel = 0;
-var previousChannel = 0;
+var randomChannel = Math.floor(Math.random() * 1001);
+var channel = randomChannel;
+var previousChannel = channel
 
 const channelHeading = document.getElementById('channel-heading');
 const messageInput = document.getElementById('message-input');
@@ -26,6 +27,7 @@ colorSelected = colors[randomColor].value;
 window.onload = function() {
     channelInput.value = channel;
     messageInput.style.color = colorSelected;
+    channelHeading.textContent = `channel ${channel}`;
 }
 
 
@@ -33,6 +35,7 @@ window.onload = function() {
 // -- Server/Client handling --
 const socket = new WebSocket('ws://localhost:3000')
 
+// Send text messages
 function sendMessage() {
     const trimmedMessageInput = messageInput.value.trim();
     if (trimmedMessageInput) {
@@ -43,41 +46,45 @@ function sendMessage() {
     input.focus();
 }
 
-channelInput.addEventListener('input', updateChannel);
-
+// Update your channel on server
 function updateChannel() {
-    var channelValue = parseInt(channelInput.value, 10);
-    if (!Number.isInteger(channelValue)) {
-        channelValue = 0;
-    } else if (channelValue < 0) {
-        channelValue = 0;
-    } else if (channelValue > 1000) { 
-        channelValue = 1000;
+    var newChannelValue = parseInt(channelInput.value, 10);
+    if (!Number.isInteger(newChannelValue)) {
+        newChannelValue = 0;
+    } else if (newChannelValue < 0) {
+        newChannelValue = 0;
+    } else if (newChannelValue > 1000) { 
+        newChannelValue = 1000;
     }
-    channelInput.value = channelValue;
-    if (channelValue != previousChannel) {
+    channelInput.value = newChannelValue;
+    if (newChannelValue != previousChannel) {
         previousChannel = channel;
-        channel = channelValue;
-        const message = createMessage('updateChannel', channel);
-        socket.send(message);
+        channel = newChannelValue;
+        socket.send(createMessage('updateChannel', channel));
     } else {
-        channel = channelValue;
+        channel = newChannelValue;
     }
-    channelHeading.textContent = `Channel ${channel}`;
-
+    channelHeading.textContent = `channel ${channel}`;
 }
+channelInput.addEventListener('input', updateChannel);
 
 // Receive messages and add to chat div
 socket.addEventListener('message', (event) => {
     console.log(event.data);
     const message = JSON.parse(event.data);
-    const text = document.createElement('p');
-    text.style.color = message.color;
-    text.textContent = message.text;
-    chat.appendChild(text);
-
+    const type = message.type;
+    if (type === 'requestChannel') {
+        socket.send(createMessage('updateChannel', channel));
+    } else if (type === 'textMessage' || type === 'error') {
+        const text = document.createElement('p');
+        text.style.color = message.color;
+        text.textContent = message.text;
+        chat.appendChild(text);
+    }
+    
 })
 
+// JSON message creator
 function createMessage(type, channel=0, text='placeholder', color='lime') {
     return JSON.stringify({
         type: type,

@@ -5,7 +5,7 @@ const socket = new WebSocketServer({
 var clients = new Map();
 
 socket.on('connection', (ws) => {
-    clients.set(ws, 0);
+    ws.send(createMessage('requestChannel'));
     console.log('Client connected');
 
     ws.on('message', (message) => {
