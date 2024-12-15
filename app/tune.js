@@ -16,9 +16,9 @@ window.history.replaceState({}, "", url);
 
 previousChannel = channel;
 
-const channelHeading = document.getElementById('channel-heading');
 const messageInput = document.getElementById('message-input');
 const channelInput = document.getElementById('channel-input');
+const channelRandomize = document.getElementById('channel-randomize');
 const chat = document.getElementById('chat');
 
 var colors = Array.from(document.getElementsByName("color"));
@@ -40,7 +40,6 @@ colorSelected = colors[randomColor].value;
 window.onload = function() {
     channelInput.value = channel;
     messageInput.style.color = colorSelected;
-    channelHeading.textContent = `channel ${channel}`;
     messageInput.focus();
 }
 
@@ -57,11 +56,12 @@ function sendMessage() {
         socket.send(message);
         messageInput.value = '';
     }
-    input.focus();
+    messageInput.focus();
 }
 
 // Update your channel on server
 function updateChannel() {
+    previousChannel = channel;
     var newChannelValue = parseInt(channelInput.value, 10);
     if (!Number.isInteger(newChannelValue)) {
         newChannelValue = 0;
@@ -72,17 +72,21 @@ function updateChannel() {
     }
     channelInput.value = newChannelValue;
     if (newChannelValue != previousChannel) {
-        previousChannel = channel;
         channel = newChannelValue;
         socket.send(createMessage('updateChannel', channel));
     } else {
         channel = newChannelValue;
     }
-    channelHeading.textContent = `channel ${channel}`;
     url.searchParams.set("channel", channel);
     window.history.replaceState({}, "", url);
 }
 channelInput.addEventListener('input', updateChannel);
+channelRandomize.addEventListener('click', function() {
+    randomChannel = Math.floor(Math.random() * 1001);
+    channelInput.value = randomChannel;
+    updateChannel();
+    messageInput.focus();
+});
 
 // Receive messages and add to chat div
 socket.addEventListener('message', (event) => {

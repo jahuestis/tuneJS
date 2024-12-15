@@ -5,8 +5,10 @@ const socket = new WebSocketServer({
 var clients = new Map();
 
 socket.on('connection', (ws) => {
-    ws.send(createMessage('requestChannel'));
     console.log('Client connected');
+    ws.send(createMessage('requestChannel'));
+    console.log('Requested channel from client');
+    
 
     ws.on('message', (message) => {
         try {
@@ -41,6 +43,7 @@ socket.on('connection', (ws) => {
 
             } else if (messageType === 'updateChannel') {
                 clients.set(ws, targetChannel);
+                console.log(`Moved client to ${targetChannel}`);
                 
             } else {
                 throw new Error(`Invalid message type: ${messageType}`);

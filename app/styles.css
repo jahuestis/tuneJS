@@ -38,14 +38,28 @@ input:focus {
     outline: none; /* Remove the blue outline when input is focused */
 }
 
+#channel-label {
+    font-size: 1.2em;
+    display: inline-block;
+}
+
 #channel-input {
+    border: 2px solid lime;    /* Lime border */
+    background-color: transparent; /* No background */
+    color: lime;     
+    width: 6ch;
+    font-size:1.2em; 
+    margin-bottom: 2vh;
+}
+
+#channel-randomize {
     border: 2px solid lime;    /* Lime border */
     background-color: transparent; /* No background */
     color: lime;     
     width: 8ch;
     font-size:1.2em; 
+    margin-bottom: 2vh;
 }
-
 #send {          /* Set height to match width */
     border: 2px solid lime;    /* Lime border */
     background-color: transparent; /* No background */
