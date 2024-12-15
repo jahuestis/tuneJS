@@ -1,8 +1,20 @@
 
 // -- Page Setup --
 var randomChannel = Math.floor(Math.random() * 1001);
-var channel = randomChannel;
-var previousChannel = channel
+var channel;
+var previousChannel;
+
+// Check if the URL contains a 'channel' parameter
+var url = new URL(window.location.href);
+if (url.searchParams.has("channel")) {
+    channel = parseInt(url.searchParams.get("channel"), 10);
+} else {
+    channel = randomChannel;
+}
+url.searchParams.set("channel", channel);
+window.history.replaceState({}, "", url);
+
+previousChannel = channel;
 
 const channelHeading = document.getElementById('channel-heading');
 const messageInput = document.getElementById('message-input');
@@ -67,6 +79,8 @@ function updateChannel() {
         channel = newChannelValue;
     }
     channelHeading.textContent = `channel ${channel}`;
+    url.searchParams.set("channel", channel);
+    window.history.replaceState({}, "", url);
 }
 channelInput.addEventListener('input', updateChannel);
 
