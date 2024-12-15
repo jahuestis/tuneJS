@@ -7,13 +7,41 @@
     <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-    <form id="message-form">
-        <input type="text" id="message-input">
-        <button id="send">Send</button>
-    </form>
-    <ul id="messages">
+    <h1>tuneJS - anonymous chat</h1>
+    <h3 id="channel-heading">Channel 0</h3>
+    <div id="chat"></div>
+    <div id="input-div">
+        <form id="input">
+            <input type="number" id="channel-input" value="0">
+            <input type="text" id="message-input" autocomplete="off">
+            <button id="send">send</button>
+        </form>
+        <div id="colors-div">
+            <label class="red">
+                <input type="radio" value="red" name="color"> Red
+            </label>
+            <label class="orange">
+                <input type="radio" value="orange" name="color"> Orange
+            </label>
+            <label class="yellow">
+                <input type="radio" value="yellow" name="color"> Yellow
+            </label>
+            <label  class="lime">
+                <input type="radio" value="lime" name="color"> Lime
+            </label>
+            <label  class="cyan">
+                <input type="radio" value="cyan" name="color"> Cyan
+            </label>
+            <label  class="magenta">
+                <input type="radio" value="magenta" name="color"> Magenta
+            </label>
+            <label  class="white">
+                <input type="radio" value="white" name="color"> White
+            </label>
+        </div>
 
-    </ul>
+    </div>
+
     
     <script src="tune.js"></script>
 </body>
