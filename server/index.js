@@ -6,51 +6,56 @@ var clients = new Map();
 
 socket.on('connection', (ws) => {
     console.log('Client connected');
-    ws.send(createMessage('requestChannel'));
-    console.log('Requested channel from client');
+    ws.send(jsonMessage('requestClient', {test: 0}));
     
 
     ws.on('message', (message) => {
         try {
             const messageStr = message instanceof Buffer ? message.toString() : message;
-            const data = JSON.parse(messageStr);
-            const targetChannel = data.channel;
-            const messageType  = data.type;
-            const messageText = data.text;
-            const messageColor = data.color;
-            // Verify validity of message
-            if (!(Number.isInteger(targetChannel) && targetChannel >= 0 && targetChannel <= 1000)) {
-                throw new Error(`Invalid message channel: ${targetChannel}`);
-            }
-            if (typeof messageText !== 'string') {
-                throw new Error(`Invalid message text: ${messageText}`);
-            }
-            if (typeof messageColor !== 'string') {
-                throw new Error(`Invalid message color: ${messageColor}`);
-            }
-            // Process message
-            if (messageType === 'textMessage') {
-                clients.forEach((channel, client) => {
-                    if (channel === targetChannel) {
-                        try {
-                            client.send(JSON.stringify(data));
-                        } catch (error) {
-                            console.log(`Unable to send message to client ${client}`);
-                            console.error(error);
-                        }
-                    }
-                });
+            //console.log(messageStr)
+            const messageJSON = JSON.parse(messageStr);
 
-            } else if (messageType === 'updateChannel') {
-                clients.set(ws, targetChannel);
-                console.log(`Moved client to ${targetChannel}`);
-                
+            const application = messageJSON.application;
+            if (application === "tunejs") {
+                //console.log('valid application')
+                const type = messageJSON.type;
+                const data = messageJSON.data;
+
+                if (type === "textMessage") {
+                    const targetChannel = data.channel;
+                    if (!(Number.isInteger(targetChannel) && targetChannel >= 0 && targetChannel <= 1000)) {
+                        throw new Error(`Invalid message channel: ${targetChannel}`);
+                    }
+                    clients.forEach((channel, client) => {
+                        if (channel === targetChannel) {
+                            try {
+                                client.send(jsonText(data.text, data.channel, data.color));
+                            } catch (error) {
+                                console.log(`Unable to send message to client ${client}`);
+                                console.error(error);
+                            }
+                        }
+                    });
+
+                } else if (type === "updateChannel") {
+                    const targetChannel = data.channel;
+                    if (!(Number.isInteger(targetChannel) && targetChannel >= 0 && targetChannel <= 1000)) {
+                        throw new Error(`Invalid message channel: ${targetChannel}`);
+                    }
+                    clients.set(ws, targetChannel);
+                    console.log(`Moved client to ${targetChannel}`);
+
+                } else {
+                    throw new Error(`Invalid message type: ${messageType}`);
+                }
+
             } else {
-                throw new Error(`Invalid message type: ${messageType}`);
+                //console.log(`Invalid application: ${application}`)
             }
+            
         } catch (error) {
             console.error(error);
-            ws.send(createMessage('error', 0, "We weren't able to process that :(", 'red'));
+            ws.send("We weren't able to process that :(", 0, 'red');
         }
     });
 
@@ -64,11 +69,24 @@ socket.on('connection', (ws) => {
     });
 });
 
-function createMessage(type, channel=0, text='placeholder', color='lime') {
+function jsonMessage(type, data) {
     return JSON.stringify({
+        application: "tunejs",
         type: type,
-        channel: channel,
+        data: data
+    });
+}
+
+function jsonText(text, channel, color) {
+    return jsonMessage("textMessage", {
         text: text,
+        channel: channel,
         color: color
-    })
+    });
+}
+
+function jsonUpdateChannel(channel) {
+    return jsonMessage("updateChannel", {
+        channel: channel
+    });
 }

@@ -52,8 +52,7 @@ const socket = new WebSocket('ws://localhost:3000')
 function sendMessage() {
     const trimmedMessageInput = messageInput.value.trim();
     if (trimmedMessageInput) {
-        const message = createMessage('textMessage', channel, trimmedMessageInput, colorSelected);
-        socket.send(message);
+        socket.send(jsonText(trimmedMessageInput, channel, colorSelected));
         messageInput.value = '';
     }
     messageInput.focus();
@@ -73,7 +72,7 @@ function updateChannel() {
     channelInput.value = newChannelValue;
     if (newChannelValue != previousChannel) {
         channel = newChannelValue;
-        socket.send(createMessage('updateChannel', channel));
+        socket.send(jsonUpdateChannel(channel));
     } else {
         channel = newChannelValue;
     }
@@ -89,29 +88,47 @@ channelRandomize.addEventListener('click', function() {
 });
 
 // Receive messages and add to chat div
-socket.addEventListener('message', (event) => {
-    console.log(event.data);
-    const message = JSON.parse(event.data);
-    const type = message.type;
-    if (type === 'requestChannel') {
-        socket.send(createMessage('updateChannel', channel));
-    } else if (type === 'textMessage' || type === 'error') {
-        const text = document.createElement('p');
-        text.style.color = message.color;
-        text.textContent = message.text;
-        chat.appendChild(text);
+socket.addEventListener("message", (event) => {
+    //console.log(event.data);
+    const messageJSON = JSON.parse(event.data);
+    const application = messageJSON.application;
+    if (application === "tunejs") {
+        const type = messageJSON.type;
+        const data = messageJSON.data;
+        if (type === "requestClient") {
+            //console.log('server requested client, sending current channel')
+            socket.send(jsonUpdateChannel(channel));
+        } else if (type === 'textMessage' || type === 'error') {
+            const text = document.createElement('p');
+            text.style.color = data.color;
+            text.textContent = data.text;
+            chat.appendChild(text);
+        }
     }
     
 })
 
 // JSON message creator
-function createMessage(type, channel=0, text='placeholder', color='lime') {
+function jsonMessage(type, data) {
     return JSON.stringify({
+        application: "tunejs",
         type: type,
-        channel: channel,
+        data: data
+    });
+}
+
+function jsonText(text, channel, color) {
+    return jsonMessage("textMessage", {
         text: text,
+        channel: channel,
         color: color
-    })
+    });
+}
+
+function jsonUpdateChannel(channel) {
+    return jsonMessage("updateChannel", {
+        channel: channel
+    });
 }
 
 
