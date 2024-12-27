@@ -46,7 +46,7 @@ window.onload = function() {
 
 
 // -- Server/Client handling --
-const socket = new WebSocket('ws://192.168.86.115:3000')
+const socket = new WebSocket('ws://136.56.70.140:443')
 
 // Send text messages
 function sendMessage() {
