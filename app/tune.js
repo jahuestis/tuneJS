@@ -46,7 +46,7 @@ window.onload = function() {
 
 
 // -- Server/Client handling --
-const socket = new WebSocket('wss://node.beanswithwater.net/tunejs')
+const socket = new WebSocket('wss://node.beanswithwater.net/tune');
 
 // Send text messages
 function sendMessage() {

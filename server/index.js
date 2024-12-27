@@ -1,5 +1,6 @@
 const WebSocketServer = require('ws').Server;
 const socket = new WebSocketServer({ 
+    //host: '127.0.0.1', // Bind to localhost only
     port: 3000, 
 });
 var clients = new Map();
@@ -8,6 +9,12 @@ socket.on('connection', (ws) => {
     console.log('Client connected');
     ws.send(jsonMessage('requestClient', {test: 0}));
     
+    // Set up a keepalive ping
+    const interval = setInterval(() => {
+        if (ws.readyState === WebSocket.OPEN) {
+            ws.ping(); // Send ping frame
+        }
+    }, 30000); // Send every 30 seconds
 
     ws.on('message', (message) => {
         try {
@@ -60,6 +67,7 @@ socket.on('connection', (ws) => {
     });
 
     ws.on('close', () => {
+        clearInterval(interval);
         clients.delete(ws);
         console.log('Client disconnected');
     });
